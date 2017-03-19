@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
@@ -15,7 +16,20 @@ namespace Vidly.Controllers
         {
             var movie = new Movie() { Name = "Shrek" };
 
-            return View(movie);
+            var customers = new List<Customer>()
+            {
+                new Customer() {Name = "Customer 1"},
+                new Customer() {Name = "Customer 2"}
+            };
+
+            var viewModel = new RandomMovieViewModel()
+            {
+                Movie = movie,
+                Customers = customers
+            };
+
+            return View(viewModel);
+
             //return RedirectToAction("Index", "Home", new { page = 1, sortby = "Name"});
         }
 
@@ -34,6 +48,8 @@ namespace Vidly.Controllers
             return Content(string.Format("pageIndex = {0}, sortBy = {1}", pageIndex, sortBy));
         }
 
+        //Attribute based route - Enable MapMvcAttributeRoutes in RouteConfig
+        [Route("movies/released/{year}/{month:regex(\\d{2}):range(1,12)}")]
         public ActionResult ByReleaseDate(int year, int month)
         {
             return Content(year+"/"+month);
